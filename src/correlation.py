@@ -22,6 +22,8 @@ def calCorrelation(ds, l, d = euclidean_dist_square):
 
 	cnt = 0
 	(D, N) = ds.shape
+	if d == euclidean_dist_square:
+		l = l ** 2.0
 		
 	for i in range(0, N-1):
 		for j in range(i+1, N):
