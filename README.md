@@ -3,4 +3,5 @@ This project intends to improve [TISEAN package](http://www.mpipks-dresden.mpg.d
 
 # TODO
 
+- Add dimension calculation: information dimension, correlation dimension.
 - Add mutual information cal

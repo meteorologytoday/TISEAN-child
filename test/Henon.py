@@ -33,6 +33,12 @@ record[0,:].tofile("output/traj_X.bin")
 record[1,:].tofile("output/traj_Y.bin")
 record[2,:].tofile("output/traj_Z.bin")
 
+with open("output/henon_traj.txt", 'w') as f:
+	f.write("#time x y z\n")
+	for i in range(0, steps):
+		f.write("%.5e %.5e %.5e %.5e\n" % (dt * i, record[0,i], record[1,i], record[2,i]))
+
+
 record.transpose().tofile("output/traj_XYZ.bin")
 
 

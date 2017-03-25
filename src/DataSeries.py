@@ -1,7 +1,5 @@
 import numpy as np
 
-
-
 class DataSeries:
 	def __init__(self, data, n, delay):
 		"""
@@ -25,18 +23,35 @@ class DataSeries:
 		self.data = np.array(data)
 		self.n = n
 		self.delay = delay
+		self.build_flag = False
 
-	def lazyBuild(self):
-		l = len(self.data)
-		new_data = np.zeros((self.n, l - self.delay * (self.n - 1)), dtype=np.float32)
-		for i in range(0, self.n):
-			new_data[i, :] = self.data[ i*self.delay : l - (self.n - 1 + i) * self.delay ]
+	def updateDim(n):
+		if self.n != n:
+			self.n = n
+			self.build_flag = False
 
-		return new_data
+	def updateDelay(delay):
+		if self.delay != delay:
+			self.delay = delay
+			self.build_flag = False
 
 	def build(self):
-		self.dm = self.lazyBuild()
+		if self.build_flag == True:
+			return
+
+		l = len(self.data)
+		self.dm = np.zeros((self.n, l - self.delay * (self.n - 1)), dtype=np.float32)
+		for i in range(0, self.n):
+			self.dm[i, :] = self.data[ i*self.delay : l - (self.n - 1 - i) * self.delay ]
+
+
 		self.dm_len = self.dm.shape[1]
+		self.build_flag = True
+
+
+	def getDelayedMap(self):
+		self.build()
+		return np.array(self.dm)
 
 	def findNearestNeighbors(self, order, point):
 		"""
@@ -53,13 +68,27 @@ class DataSeries:
 			found in original data series.
 		"""
 		neighbors = np.array([])
-		if self.dm is None:
-			self.build()
+		self.build()
 		
 		dist = np.zeros(self.dm_len)
+		rank = [None for _ in range(0, self.dm_len)]
 		for i in range(0, self.dm_len):
 			dist[i] = (((self.dm[i, :] - point) ** 2.0).sum()) ** 0.5
+			rank[i] = [i, dist[i]]
+			
+		rank.sort(key=lambda x: x[1])
 
-		
+		return rank
 
-		return 
+	def printDelayMap(self, filename):
+		self.build()
+		with open(filename, "w") as fh:
+			for i in range(0, self.dm_len):
+				for j in range(0, self.n):
+					fh.write("%.3e " % (self.dm[j,i],))
+				
+				fh.write("\n")
+
+
+
+
