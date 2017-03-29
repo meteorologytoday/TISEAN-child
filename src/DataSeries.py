@@ -40,7 +40,8 @@ class DataSeries:
 			return
 
 		l = len(self.data)
-		self.dm = np.zeros((self.n, l - self.delay * (self.n - 1)), dtype=np.float32)
+		self.dm_len = l - self.delay * (self.n - 1)
+		self.dm = np.zeros((self.n, self.dm_len), dtype=np.float32)
 		for i in range(0, self.n):
 			self.dm[i, :] = self.data[ i*self.delay : l - (self.n - 1 - i) * self.delay ]
 
@@ -53,8 +54,31 @@ class DataSeries:
 		self.build()
 		return np.array(self.dm)
 
+
+	def getDistMap(self):
+		"""
+			Building a
+
+		"""
+
+		self.build()
+
+		distmap = np.zeros((self.dm_len, self.dm_len))
+		for i in range(0, self.dm_len):
+			for j in range(i, self.dm_len):
+				distmap[i,j] = (((self.dm[:, i] - self.dm[:, j]) ** 2.0).sum()) ** 0.5
+				
+				 # for i=j just do it again since speed is almost the same
+				distmap[j,i] = distmap[i,j]
+
+		return distmap
+
 	def findNearestNeighbors(self, order, point):
 		"""
+
+		    This function returns the nearest neighbors based on
+	    Euclidean distance function.
+
 		# PARAMETERS
 		<order>
 			How many neighbors.
