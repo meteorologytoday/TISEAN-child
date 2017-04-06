@@ -48,7 +48,7 @@ class DataSeries:
 			self.dm[:, i] = self.data[ i*self.delay : l - (self.n - 1 - i) * self.delay ]
 
 
-		self.dm_len = self.dm.shape[1]
+		self.dm_len = self.dm.shape[0]
 		self.build_flag = True
 
 
@@ -59,8 +59,8 @@ class DataSeries:
 
 	def getDistMap(self):
 		"""
-			Building a
-
+			Building a distance map which is a matrix representing the dist between
+			the i-th and j-th point based on euclidean metric.
 		"""
 
 		self.build()
@@ -75,16 +75,13 @@ class DataSeries:
 
 		return distmap
 
-	def findNearestNeighbors(self, order, point):
+	def getNeighborsRank(self, point):
 		"""
 
 		    This function returns the nearest neighbors based on
 	    Euclidean distance function.
 
 		# PARAMETERS
-		<order>
-			How many neighbors.
-
 		<point>
 			A tuple/list of numbers representing target point in
 			<self.n>-dimensional embedding space.
@@ -93,15 +90,17 @@ class DataSeries:
 			A list of integers which are indices of neighbors
 			found in original data series.
 		"""
-		neighbors = np.array([])
+
 		self.build()
-		
-		dist = np.zeros(self.dm_len)
-		rank = [None for _ in range(0, self.dm_len)]
-		for i in range(0, self.dm_len):
-			dist[i] = (((self.dm[i, :] - point) ** 2.0).sum()) ** 0.5
-			rank[i] = [i, dist[i]]
+		neighbors = np.array([])
 			
+		rank = [None for _ in range(0, self.dm_len)]
+		point = np.array(point)
+		print(self.dm_len)
+		for i in range(0, self.dm_len):
+			rank[i] = [i, (((self.dm[i,:] - point)**2.0).sum())**0.5]
+			
+
 		rank.sort(key=lambda x: x[1])
 
 		return rank
