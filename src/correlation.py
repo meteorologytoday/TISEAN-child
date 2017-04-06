@@ -27,7 +27,7 @@ def calCorrelation(ds, l, d = euclidean_dist_square):
 		
 	for i in range(0, N-1):
 		for j in range(i+1, N):
-			if d(ds[:, i], ds[:, j]) < l:
+			if d(ds[i, :], ds[j, :]) < l:
 				cnt += 1
 
 	return float(cnt) / float(N) ** 2.0

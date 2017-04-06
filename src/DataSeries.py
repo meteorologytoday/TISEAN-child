@@ -19,6 +19,8 @@ class DataSeries:
 			X2 = [ data[ 5], data[ 6], ..., data[94] ]
 			X3 = [ data[10], data[11], ..., data[99] ]
 
+			The data is arranged in [time, dimension] format.
+
 		"""
 		self.data = np.array(data)
 		self.n = n
@@ -41,9 +43,9 @@ class DataSeries:
 
 		l = len(self.data)
 		self.dm_len = l - self.delay * (self.n - 1)
-		self.dm = np.zeros((self.n, self.dm_len), dtype=np.float32)
+		self.dm = np.zeros((self.dm_len, self.n), dtype=np.float32)
 		for i in range(0, self.n):
-			self.dm[i, :] = self.data[ i*self.delay : l - (self.n - 1 - i) * self.delay ]
+			self.dm[:, i] = self.data[ i*self.delay : l - (self.n - 1 - i) * self.delay ]
 
 
 		self.dm_len = self.dm.shape[1]
@@ -66,7 +68,7 @@ class DataSeries:
 		distmap = np.zeros((self.dm_len, self.dm_len))
 		for i in range(0, self.dm_len):
 			for j in range(i, self.dm_len):
-				distmap[i,j] = (((self.dm[:, i] - self.dm[:, j]) ** 2.0).sum()) ** 0.5
+				distmap[i,j] = (((self.dm[i,:] - self.dm[j,:]) ** 2.0).sum()) ** 0.5
 				
 				 # for i=j just do it again since speed is almost the same
 				distmap[j,i] = distmap[i,j]
@@ -109,7 +111,7 @@ class DataSeries:
 		with open(filename, "w") as fh:
 			for i in range(0, self.dm_len):
 				for j in range(0, self.n):
-					fh.write("%.3e " % (self.dm[j,i],))
+					fh.write("%.3e " % (self.dm[i, j],))
 				
 				fh.write("\n")
 

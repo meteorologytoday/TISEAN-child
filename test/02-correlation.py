@@ -7,17 +7,17 @@ from scipy import stats
 import sys
 
 #X = np.loadtxt("data/henon.txt", usecols=(1,2,3), unpack=True)
-#x = np.loadtxt("data/pdo.txt", usecols=(2,), unpack=True)
+x = np.loadtxt("data/pdo.txt", usecols=(2,), unpack=True)
 #x = np.loadtxt("data/mei.txt", usecols=(2,), unpack=True)
 
-x = np.random.rand(2000)
+#x = np.random.rand(2000)
 
-sup = np.max(x)
-inf = np.min(x)
+sup = np.amax(x)
+inf = np.amin(x)
 
 x = x / (sup - inf)
 
-print(x)
+#print(x)
 
 ds = DS(x, n=int(sys.argv[1]), delay=12)
 dm = ds.getDelayedMap()
