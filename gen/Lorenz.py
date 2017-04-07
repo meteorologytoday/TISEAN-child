@@ -1,9 +1,8 @@
 import numpy as np
 
-steps = 1048576 + 1000
-#steps = 1000
-init = np.array([10.0, 0.0, 0.0])
-dt = np.pi / 100.0
+steps = 10000
+init = np.array([0.0, 1.0, 0.0])
+dt = 0.01
 
 shifts = np.arange(0, 220, 20)
 
@@ -15,39 +14,21 @@ def rk4(x, dxfunc, dt):
 	return x + (dx1 + 2.0 * dx2 + 2.0 * dx3 + dx4) / 6.0
 
 
-a, b, c = 0.15, 0.20, 10.0
-def henon(x):
+sigma, gamma, beta = 10.0, 28.0, 8.0/3.0
+def DynamicalSystem(x):
+	global sigma, gamma, beta
 	X, Y, Z = x
-	return np.array([- Z - Y, X + a * Y, b + Z * (X - c)])
+	return np.array([sigma * (Y - X), X * (gamma - Z) - Y, X * Y - beta * Z])
 
 
 x = init.copy()
 
 record = np.zeros((3, steps), dtype='<f4')
 for i in range(0, steps):
-	x = rk4(x, henon, dt)
+	x = rk4(x, DynamicalSystem, dt)
 	record[0, i], record[1, i], record[2, i] = x[0], x[1], x[2]
 
-
-record[0,:].tofile("output/traj_X.bin")
-record[1,:].tofile("output/traj_Y.bin")
-record[2,:].tofile("output/traj_Z.bin")
-
-with open("output/henon_traj.txt", 'w') as f:
+with open("Lorenz.txt", 'w') as f:
 	f.write("#time x y z\n")
 	for i in range(0, steps):
 		f.write("%.5e %.5e %.5e %.5e\n" % (dt * i, record[0,i], record[1,i], record[2,i]))
-
-
-record.transpose().tofile("output/traj_XYZ.bin")
-
-
-for shift in shifts:
-	n = steps - 2 * shift
-	xx = np.zeros((3, n), dtype='<f4')
-	for i, var in enumerate(['X', 'Y', 'Z']):
-		xx[0, :] = record[i,         0 : n            ]
-		xx[1, :] = record[i,     shift : n +     shift]
-		xx[2, :] = record[i, 2 * shift : n + 2 * shift]
-
-		xx.transpose().tofile("output/traj_%s_shift_%d.bin" % (var, shift,))

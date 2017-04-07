@@ -87,8 +87,8 @@ class DataSeries:
 			<self.n>-dimensional embedding space.
 
 		# RETURN VALUE
-			A list of integers which are indices of neighbors
-			found in original data series.
+			A list of (i, point) pairs in which the first elements are indices
+			of neighbors and second elements are distance.
 		"""
 
 		self.build()
@@ -96,7 +96,6 @@ class DataSeries:
 			
 		rank = [None for _ in range(0, self.dm_len)]
 		point = np.array(point)
-		print(self.dm_len)
 		for i in range(0, self.dm_len):
 			rank[i] = [i, (((self.dm[i,:] - point)**2.0).sum())**0.5]
 			
