@@ -15,9 +15,9 @@ class DataSeries:
             n = 3 and delay = 5, and len(data) = 100, then this
 			means there are 3 series, each with length 90, i.e.
 
-			X1 = [ data[ 0], data[ 1], ..., data[89] ]
+			X1 = [ data[10], data[11], ..., data[99] ]
 			X2 = [ data[ 5], data[ 6], ..., data[94] ]
-			X3 = [ data[10], data[11], ..., data[99] ]
+			X3 = [ data[ 0], data[ 1], ..., data[89] ]
 
 			The data is arranged in [time, dimension] format.
 
@@ -45,7 +45,8 @@ class DataSeries:
 		self.dm_len = l - self.delay * (self.n - 1)
 		self.dm = np.zeros((self.dm_len, self.n), dtype=np.float32)
 		for i in range(0, self.n):
-			self.dm[:, i] = self.data[ i*self.delay : l - (self.n - 1 - i) * self.delay ]
+			end_i = l - i * self.delay
+			self.dm[:, i] = self.data[ end_i - self.dm_len : end_i]
 
 
 		self.dm_len = self.dm.shape[0]

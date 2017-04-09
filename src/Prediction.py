@@ -1,5 +1,5 @@
 import numpy as np
-
+import sys
 
 def NNM_vec(dataseries, neighbors, start, steps, weight=None):
 	""" 
@@ -90,7 +90,6 @@ def NNM_mc(dataseries, neighbors, start, steps, weight=None):
 	total_weight = sum(weight)
 	current_pt = np.array(start, dtype=np.float)
 	pred = np.zeros((steps, dataseries.n))
-	data = dataseries.dm
 
 	for i in range(steps):
 		NNs = dataseries.getNeighborsRank(current_pt)
@@ -104,7 +103,7 @@ def NNM_mc(dataseries, neighbors, start, steps, weight=None):
 			if NN[0] == dataseries.dm_len-1:
 				continue
 
-			vecs.append(np.array(data[NN[0]+1]))
+			vecs.append(np.array(dataseries.dm[NN[0]+1]))
 
 
 		avg_vec = np.zeros(dataseries.n)
