@@ -7,28 +7,28 @@ from scipy import stats
 import sys
 
 #X = np.loadtxt("data/henon.txt", usecols=(1,2,3), unpack=True)
-x = np.loadtxt("data/pdo.txt", usecols=(2,), unpack=True)
-#x = np.loadtxt("data/mei.txt", usecols=(2,), unpack=True)
+#x = np.loadtxt("data/pdo.txt", usecols=(2,), unpack=True)
+x = np.loadtxt("data/mei.txt", usecols=(2,), unpack=True)
 
 #x = np.random.rand(2000)
 
 sup = np.amax(x)
 inf = np.amin(x)
 
-x = x / (sup - inf)
+x = (x - np.mean(x)) / (sup - inf)
 
-#print(x)
+print(len(x))
 
-ds = DS(x, n=int(sys.argv[1]), delay=12)
+ds = DS(x, n=int(sys.argv[1]), delay=9)
 dm = ds.getDelayedMap()
 
 #dm = X[:, -500:] / (np.amax(X) - np.amin(X))
 
 
 
-#boxes = np.exp(linspace(0, 1, num=21)[1:]) # ln(0) is undefined so must be avoided
+#boxes = np.linspace(0, 1, num=11)[1:] # ln(0) is undefined so must be avoided
 
-boxes = np.array([0.1 * (i+1) for i in range(0, 10)])
+boxes = np.array([0.1+0.05 * (i+1) for i in range(0, 20)])
 cor = boxes.copy()
 
 for i, box in enumerate(boxes):

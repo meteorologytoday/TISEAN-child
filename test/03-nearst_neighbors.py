@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-x = np.loadtxt("data/henon.txt", usecols=(1,), unpack=True)
+x = np.loadtxt("data/Henon.txt", usecols=(1,), unpack=True)
 
 x = x[::20]
 
